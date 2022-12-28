@@ -1,0 +1,108 @@
+body {
+    color: #4a4a4a;
+}
+
+.cursorPointer {
+    cursor: pointer;
+}
+
+.fileUploadBlock {
+    border: 2px dashed #ccc;
+    padding: 35px 15px;
+
+}
+
+
+/* .fileUploadBlock:hover {
+    border: 2px solid pink;
+    background-color: pink;
+    transition: .5s;
+} */
+
+.radius-8 {
+    border-radius: 8px;
+}
+
+.h100 {
+    height: 100vh;
+}
+
+
+
+.actionBtn {
+    background-color: #b7daff;
+    border: 1px solid #b7daff;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#selectedFolderFiledId {
+    display: none;
+}
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #322d2d;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+#myModal {
+    background: #fff;
+    padding: 10px;
+}
+
+#myBtn {
+    position: relative;
+    /* right: -10px; */
+    font-family: cursive;
+    font-size: 20px;
+}
+
+#mainModal {
+    padding: 100px;
+
+}

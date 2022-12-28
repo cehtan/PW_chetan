@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>POC</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/table.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+</head>
+
+<body class="bg-light">
+
+    <!-- folder select block start -->
+    <div class="col-12 d-flex justify-content-center">
+        <div class="align-items-lg-center col-lg-6 col-sm-12 d-flex flex-wrap h100">
+
+            <div class="col-12 bg-white radius-8 px-0"
+                style="min-height: 300px;    box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);">
+                <div class="col-12 p-3 border-bottom mb-4">
+
+                    <h4> Upload Section</h4>
+
+                </div>
+                <div class="col-12  d-flex flex-wrap my-4">
+                    <div class="col-12 fileUploadBlock radius-8">
+                        <div class="col-12">
+
+                            <label class="flex-wrap m-0 d-flex justify-content-center " for="folder">
+                                <div class="d-flex flex-wrap justify-content-center cursorPointer">
+                                    <img width="130px" src="assets/images/fileUploadIcon.png">
+                                    <div class="col-12 d-flex flex-wrap justify-content-center">
+                                        Choose Folder
+                                    </div>
+                                </div>
+
+                            </label>
+                            <input style="display: none;" type="file" id="folder" webkitdirectory multiple />
+                        </div>
+
+                        <!-- folder select block end -->
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex flex-wrap mb-4 ">
+                    <!-- table to bind in here -->
+                    <h4 id="selectedFolderFiledId">Selected Folder Files</h4>
+                    <div class="col-12 fixTableHead px-0" id="result"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainModal" class="modal">
+        <div class="bg-white col-12 d-flex flex-wrap p-4 radius-8">
+            <div class="align-items-center col-12 d-flex flex-wrap justify-content-between px-0">
+                <div class="col">
+                    <h4>Selected File Details </h4>
+                </div>
+                <div id="myBtn" class="close d-flex justify-content-end flex-wrap col px-0 my-2" onClick="closeModal()">
+                    X
+                </div>
+            </div>
+            <div id="myModal"> </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+<script>
+    var finalFileList = [];
+    document.getElementById("folder").addEventListener("change", function (event) {
+
+        var files = event.target.files;
+        for (var i = 0; i < files.length; i++) {
+            let selectedFile = files[i]
+
+            let getFileNameObj = getFileName(selectedFile['name'])
+            debugger;
+            let fileObj = {
+                fileOrignalName: selectedFile['name'],
+                fileName: getFileNameObj['fileName'],
+                fileOrignalSize: selectedFile['size'],
+                fileFormatedSize: formatFileSize(selectedFile['size']),
+                fileExt: getFileNameObj['fileExt'],
+                lastModifiedDate: formatDate(selectedFile['lastModifiedDate']),
+            }
+
+            finalFileList.push(fileObj)
+            finalFileList.sort(sortArrayObj);
+
+            var html = "<table>";
+            // to create table head or <th>
+            html += "<tr>";
+            html += "<th>" + 'File Name' + "</th>";
+            html += "<th>" + 'File Size' + "</th>";
+            html += "<th>" + 'Action' + "</th>";
+            html += "</tr>";
+            // end
+
+            finalFileList.forEach(function (entry, index) {
+                html += '<tr  >';
+                for (var k in entry) {
+                    if (k && (k.toLowerCase() == 'filename' || k.toLowerCase() == 'fileformatedsize')) {
+                        html += "<td>" + entry[k] + "</td>";
+                    }
+                }
+                html += "<td>" + '<div> <button class="actionBtn"  onmouseover="showDetailsOnHover(' + index + ',this)" > Info </button> </div>' + "</td>";
+                html += "</tr>";
+            });
+            html += "</table>";
+            document.getElementById("result").innerHTML = html;
+
+
+            // show main modal on hover
+            var selectedId = document.getElementById("selectedFolderFiledId");
+            selectedId.style.display = "block";
+
+            // required functions START
+            // function to get file name and file extension 
+            function getFileName(fileName) {
+                let selectedFileObj = {
+                    fileName: '',
+                    fileExt: '',
+                }
+                if (fileName) {
+                    let splitedFileName = fileName.split('.')
+                    if (splitedFileName && splitedFileName.length) {
+                        selectedFileObj['fileExt'] = splitedFileName[splitedFileName.length - 1]
+                        selectedFileObj['fileName'] = fileName.replace('.' + selectedFileObj['fileExt'], '')
+                    }
+                }
+                return selectedFileObj
+            }
+
+            // date format
+            function formatDate(date) {
+                var d = new Date(date),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
+
+                if (month.length < 2)
+                    month = '0' + month;
+                if (day.length < 2)
+                    day = '0' + day;
+
+                return [year, month, day].join('-');
+            }
+
+            // function to sort array via fil extension 
+            function sortArrayObj(a, b) {
+                if (a.fileExt > b.fileExt) {
+                    return 1;
+                }
+            }
+            // function to convert file size to their respective formats
+            function formatFileSize(bytes) {
+                if (bytes == 0) return '0 Bytes';
+                var k = 1000,
+                    dm = 2,
+                    sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                    i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+        };
+
+
+    }, false);
+
+
+
+    function showDetailsOnHover(data, ll) {
+        let finalObj = {}
+        if (finalFileList && finalFileList.length) {
+            let dd = finalFileList[data]
+            if (Object.keys(dd)) {
+                var html = "<table>";
+                // to create table head or <th>
+                html += "<tr>";
+                html += "<th>" + 'File Name' + "</th>";
+                html += "<th>" + 'File Size' + "</th>";
+                html += "<th>" + 'File Extension ' + "</th>";
+                html += "<th>" + 'Modified Date' + "</th>";
+                html += "</tr>";
+                // end
+
+                html += '<tr>';
+                for (var k in dd) {
+                    if (k && (k.toLowerCase() == 'filename' || k.toLowerCase() == 'fileformatedsize' || k.toLowerCase() == 'fileext' || k.toLowerCase() == 'lastmodifieddate')) {
+                        html += "<td>" + dd[k] + "</td>";
+                    }
+                }
+
+                html += "</tr>";
+
+                html += "</table>";
+                document.getElementById("myModal").innerHTML = html;
+
+                // show main modal on hover
+                var mainModal = document.getElementById("mainModal");
+                mainModal.style.display = "block";
+
+                var modal = document.getElementById("myModal");
+                modal.style.display = "block";
+                modal.style.width = "100%";
+                modal.style.margin = "0 auto";
+            }
+        }
+
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("mainModal");
+        modal.style.display = "none";
+    }
+</script>
+
+</html>
